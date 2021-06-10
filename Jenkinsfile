@@ -27,7 +27,7 @@ pipeline {
                script{
                     git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
                    gv = load "script.groovy"
-                   gv.test()
+                   gv.UnitTest()
                }
                 
             }
