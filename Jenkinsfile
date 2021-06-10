@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+def gv
 pipeline {
     agent none
 
@@ -14,7 +15,8 @@ pipeline {
             steps {
                 script{
                     git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
-                  sh 'mvn compile'
+                   gv = load "script.groovy"
+                    gv.compile()
                 }
                 
             }
@@ -23,8 +25,9 @@ pipeline {
             agent {label 'linux_slave'}
             steps {
                script{
-                   git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
-                   sh 'mvn test'
+                    git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
+                   gv = load "script.groovy"
+                   gv.test()
                }
                 
             }
@@ -34,7 +37,7 @@ pipeline {
             agent any
             steps {
                 script{
-                    sh 'mvn package'
+                    gv.package()
                 }
                 
             }
