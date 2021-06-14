@@ -22,12 +22,12 @@ pipeline {
             }
         }
         stage('UnitTest') {
-           # agent {label 'linux-slave'}
+           #! agent {label 'linux-slave'}
             agent any
             steps {
                script{
-                 #   git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
-                  # gv = load "script.groovy"
+                 #!   git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
+                  #! gv = load "script.groovy"
                    gv.UnitTest()
                }
                 
