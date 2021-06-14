@@ -26,7 +26,7 @@ pipeline {
             agent any
             steps {
                script{
-                
+                  gv = load "script.groovy"
                    gv.UnitTest()
                }
                 
@@ -37,6 +37,7 @@ pipeline {
             agent any
             steps {
                 script{
+                      gv = load "script.groovy"
                     gv.package()
                 }
                 
