@@ -6,8 +6,8 @@ pipeline {
     }
      environment{
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
-        DEV_SERVER_IP='ec2-user@13.232.96.63'
-        ACM_IP='ec2-user@65.2.176.52'
+        DEV_SERVER_IP='ec2-user@52.66.205.178'
+        ACM_IP='ec2-user@13.232.150.60'
         APP_NAME='java-mvn-app'
         AWS_ACCESS_KEY_ID =credentials("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY=credentials("AWS_SECRET_ACCESS_KEY")
@@ -42,7 +42,7 @@ pipeline {
             agent any
            steps{
             script{
-            sshagent(['DEV_SERVER_KEY']) {
+            sshagent(['BUILD_SERVER']) {
         withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                      echo "PACKAGING THE CODE"
                      sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
@@ -76,7 +76,7 @@ pipeline {
             steps{
             script{
                 echo "copy ansible files on ACM and run the playbook"
-               sshagent(['DEV_SERVER_KEY']) {
+               sshagent(['BUILD_SERVER']) {
     sh "scp -o StrictHostKeyChecking=no ansible/* ${ACM_IP}:/home/ec2-user"
     withCredentials([sshUserPrivateKey(credentialsId: 'ANSIBLE_TARGET_KEY',keyFileVariable: 'keyfile',usernameVariable: 'user')]){ 
     sh "scp -o StrictHostKeyChecking=no $keyfile ${ACM_IP}:/home/ec2-user/.ssh/id_rsa"    
