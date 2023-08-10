@@ -6,7 +6,7 @@ pipeline{
     }
     environment{
         IMAGE_NAME ='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
-        BUILD_SERVER_IP ='ec2-user@52.66.242.157'
+        BUILD_SERVER_IP ='ec2-user@13.126.223.241'
         APP_NAME='java-mvn-app'
         }
 
@@ -40,7 +40,7 @@ pipeline{
             steps{
             script{
                 echo "Packaging THE CODE"
-                sshagent(['BUILD_SERVER_KEY']) {
+                sshagent(['build-server-key']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER_IP}:/home/ec2-user"
                 sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER_IP} 'bash ~/server-script.sh'"
