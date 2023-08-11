@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: $APP_NAME
+  name: java-mvn-app
   labels:
-     app: $APP_NAME
+     app: java-mvn-app
 spec:
-  replicas: 2
+  replicas: 40
   selector:
     matchLabels:
-      app: $APP_NAME
+      app: java-mvn-app
   template:
     metadata:
       labels:
-        app: $APP_NAME
+        app: java-mvn-app
     spec:
       imagePullSecrets:
       - name: docker-hub-key
       containers:
-      - name: $APP_NAME
+      - name: java-mvn-app
         image: devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER
         imagePullPolicy: Always
         ports:
@@ -26,14 +26,37 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: $APP_NAME
+  name: java-mvn-app
   labels: 
-      app: $APP_NAME
+      app: java-mvn-app
 spec:
   selector:
-    app: $APP_NAME
+    app: java-mvn-app
   ports:
   - port: 8080
     targetPort: 8080
     protocol: TCP
   type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: addbook-ingress
+  annotations:
+      #nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      kubernetes.io/ingress.class: alb
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /addbook
+            pathType: Prefix
+            backend:
+              service:
+                name: java-mvn-app
+                port:
+                  name: 8080
