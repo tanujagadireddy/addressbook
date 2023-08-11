@@ -37,26 +37,26 @@ spec:
     targetPort: 8080
     protocol: TCP
   type: LoadBalancer
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: addbook-ingress
-  annotations:
-      #nginx.ingress.kubernetes.io/rewrite-target: /
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      kubernetes.io/ingress.class: alb
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /addbook
-            pathType: Prefix
-            backend:
-              service:
-                name: java-mvn-app
-                port:
-                  name: 8080
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: addbook-ingress
+#   annotations:
+#       #nginx.ingress.kubernetes.io/rewrite-target: /
+#       nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+#       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+#       nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+#       alb.ingress.kubernetes.io/scheme: internet-facing
+#       kubernetes.io/ingress.class: alb
+# spec:
+#   rules:
+#     - http:
+#         paths:
+#           - path: /addbook
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: java-mvn-app
+#                 port:
+#                   name: 8080
