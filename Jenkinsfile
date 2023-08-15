@@ -29,7 +29,7 @@ pipeline {
             //         BRANCH_NAME == 'dev' || BRANCH_NAME == 'develop'
             //     }
             // }
-            
+            agent any
             steps {
                 script{
                     sshagent(['build-server-key']) {
