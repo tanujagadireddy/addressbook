@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
@@ -14,6 +14,7 @@ pipeline {
 
     stages {
         stage('Compile') {
+            agent any
             steps {
                 
                 git 'https://github.com/preethid/addressbook.git'                
@@ -22,6 +23,7 @@ pipeline {
             }           
         }
         stage('UnitTest') {
+            agent any
             when{
                 expression{
                     params.executeTests == true
@@ -32,6 +34,7 @@ pipeline {
             }           
         }
         stage('package') {
+            agent {label 'linux_slave'}
             // when{
             //     expression{
             //         BRANCH_NAME == 'dev' || BRANCH_NAME == 'develop'
@@ -44,12 +47,13 @@ pipeline {
             }           
         }
         stage('Deploy'){
+            agent {label 'linux_slave'}
             steps{
                 input{
                     message: "Please approve to deploy"
                     ok "yes, to deploy"
                     parameters{
-                        choice{name:'APPVERSION',choice['1.2','1.3','1.4']}
+                        choice(name:'APPVERSION',choice['1.2','1.3','1.4'])
                     }
                 }
                 echo "Deploying to Test"
