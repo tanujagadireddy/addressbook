@@ -29,9 +29,13 @@ pipeline {
             //         BRANCH_NAME == 'dev' || BRANCH_NAME == 'develop'
             //     }
             // }
-            sshagent(['build-server-key']) {
+            
             steps {
-               sh "mvn package"
+                script{
+                    sshagent(['build-server-key']) {
+                        sh "mvn package"
+                }
+               
               
             }           
         }
