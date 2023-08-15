@@ -5,49 +5,37 @@ pipeline {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "mymaven"
     }
+    parameters{
+         string(name:'Env',defaultValue:'Test',description:'env to deploy')
+         booleanParam(name:'executeTests',defaultValue: true,description:'decide to run tc')
+          choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
+
+    }
 
     stages {
         stage('Compile') {
             steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/preethid/addressbook.git'
-
-                // Run Maven on a Unix agent.
-                sh "mvn compile"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
-
-           
+                
+                git 'https://github.com/preethid/addressbook.git'                
+                sh "mvn compile"    
+                echo "Env to deploy: ${params.Env}"            
+            }           
         }
         stage('UnitTest') {
-            steps {
-                // Get some code from a GitHub repository
-              
-
-                // Run Maven on a Unix agent.
-                sh "mvn test"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            when{
+                expression{
+                    params.executeTests == true
+                }
             }
-
-           
+            steps {                
+                sh "mvn test"
+            }           
         }
         stage('package') {
             steps {
-                // Get some code from a GitHub repository
-                
-
-                // Run Maven on a Unix agent.
-                sh "mvn package"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
-
-           
+               sh "mvn package"
+               echo "deploying app version: ${params.APPVERSION}"
+            }           
         }
         
     }
