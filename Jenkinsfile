@@ -32,8 +32,9 @@ pipeline {
             agent any
             steps {
                 script{
-                    sshagent(['build-server-key']) {
-                        sh "mvn package"
+                sshagent(['build-server-key']) {
+                    sh "ssh 'echo Package the code'"
+                        //sh "mvn package"
                 }
                
               
