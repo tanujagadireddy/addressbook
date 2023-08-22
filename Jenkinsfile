@@ -7,7 +7,7 @@ pipeline {
     }  
     environment{
         BUILD_SERVER_IP='ec2-user@18.60.57.236'
-        IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
+        IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
     stages {
@@ -45,7 +45,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                     echo "Packaging the code on new slave"
                     sh "scp -o StrictHostKeyChecking=no server-config.sh ${BUILD_SERVER_IP}:/home/ec2-user"
-                    sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER_IP} 'bash ~/server-config.sh ${IMAGE_NAME}'"                                                       
+                    sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER_IP} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'"                                                       
                     //sh "ssh  ${BUILD_SERVER_IP} sudo docker build -t ${IMAGE_NAME} /home/ec2-user/addressbook-v2"
                     sh "ssh  ${BUILD_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
                     sh "ssh  ${BUILD_SERVER_IP} sudo docker push ${IMAGE_NAME}"

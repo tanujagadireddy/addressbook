@@ -14,4 +14,4 @@ else
 fi
 cd /home/ec2-user/addressbook-v2
 git checkout cicd-docker
-sudo docker build -t $1 /home/ec2-user/addressbook-v2
+sudo docker build -t $1:$2 /home/ec2-user/addressbook-v2
