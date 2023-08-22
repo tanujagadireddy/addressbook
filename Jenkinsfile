@@ -57,7 +57,7 @@ pipeline {
         }
         }
         stage('Deploy'){
-            agent {label 'linux_slave'}
+            agent any
             input{
                     message "Please approve to deploy"
                     ok "yes, to deploy"
