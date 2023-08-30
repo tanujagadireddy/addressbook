@@ -16,4 +16,6 @@ phases:
 artifacts:
   files:
     - target/addressbook.war
+    - appspec.yml
+    - application-hook-start.sh
   discard-paths: yes
