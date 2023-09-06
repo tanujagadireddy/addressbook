@@ -69,10 +69,11 @@ pipeline {
                  script{
                 /*sshagent(['build-server-key']) {
                # withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                echo "Deploying to EKS"
+                
                 #sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER_IP} sudo yum install docker -y"
                 #sh "ssh  ${TEST_SERVER_IP} sudo systemctl start docker"
                 #sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"*/
+                echo "Deploying to EKS"
                 sh 'envsubst < k8s-manifest.yml | sudo /usr/local/bin/kubectl apply -f -'
             #}
         #}
