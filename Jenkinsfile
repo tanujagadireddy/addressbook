@@ -6,8 +6,8 @@ pipeline {
         maven "mymaven"
     }  
     environment{
-        BUILD_SERVER_IP='ec2-user@18.60.57.236'
-        TEST_SERVER_IP='ec2-user@18.60.87.22'
+        BUILD_SERVER_IP='ec2-user@18.60.149.81'
+        #TEST_SERVER_IP='ec2-user@18.60.87.22'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
@@ -56,7 +56,7 @@ pipeline {
             }           
         }
         }
-        stage('Deploy'){
+        stage('Deploy to EKS'){
             agent any
             input{
                     message "Please approve to deploy"
@@ -67,15 +67,15 @@ pipeline {
                 }
             steps{
                  script{
-                sshagent(['build-server-key']) {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                echo "Deploying to Test"
-                sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER_IP} sudo yum install docker -y"
-                sh "ssh  ${TEST_SERVER_IP} sudo systemctl start docker"
-                sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                sh "ssh  ${TEST_SERVER_IP} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
-            }
-        }
+                #sshagent(['build-server-key']) {
+               # withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                echo "Deploying to EKS"
+                #sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER_IP} sudo yum install docker -y"
+                #sh "ssh  ${TEST_SERVER_IP} sudo systemctl start docker"
+                #sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                sh 'envsubst < k8s-manifest.yml | sudo /usr/local/bin/kubectl apply -f -'
+            #}
+        #}
         
     }
             }
