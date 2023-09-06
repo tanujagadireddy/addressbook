@@ -32,7 +32,7 @@ metadata:
 spec:
   selector:
     app: java-maven-app
-    ports:
+  ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
