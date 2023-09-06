@@ -8,7 +8,7 @@ if [ -d "addressbook" ]
 then
   echo "repo is already cloned and exists"
   cd /home/ec2-user/addressbook
-  git pull origin cicd-docker
+  git pull origin cicd-k8s
 else
    git clone https://github.com/preethid/addressbook.git
 fi
