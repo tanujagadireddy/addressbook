@@ -75,6 +75,8 @@ pipeline {
                 #sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"*/
                 echo "Deploying to EKS"
                 sh 'envsubst < ab-k8s-var.yml > addbook-k8s/ab-k8s.yml'
+                     sh 'git config --global user.name "preethi"'
+                     sh 'git config --global user.email "preethi@gmail.com"'
                      sh 'git commit -a -m "k8s manifest updated"'
                 //sh 'cat k8s-manifest.yml'
             //}
