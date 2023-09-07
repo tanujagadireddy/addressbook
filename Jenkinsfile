@@ -79,6 +79,7 @@ pipeline {
                      sh 'git config --global user.email "preethi@gmail.com"'
                      sh 'git add .'
                      sh 'git commit -a -m "k8s manifest updated"'
+                     sh 'git push origin cicd-argocd'
                 //sh 'cat k8s-manifest.yml'
             //}
         //}
