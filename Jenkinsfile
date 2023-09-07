@@ -74,8 +74,8 @@ pipeline {
                 #sh "ssh  ${TEST_SERVER_IP} sudo systemctl start docker"
                 #sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"*/
                 echo "Deploying to EKS"
-                sh 'envsubst < k8s-manifest.yml | sudo /usr/local/bin/kubectl apply -f -'
-                sh 'cat k8s-manifest.yml'
+                sh 'envsubst < ab-k8s-var.yml > addbook-k8s/ab-k8s.yml'
+                //sh 'cat k8s-manifest.yml'
             //}
         //}
         
