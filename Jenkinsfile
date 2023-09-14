@@ -87,7 +87,7 @@ pipeline {
                 }
             steps{
                  script{
-                sshagent(['build-server-key']) {
+                sshagent(['TF_SERVER']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 echo "Deploying to Test"
                 sh "ssh  -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} sudo yum install docker -y"
