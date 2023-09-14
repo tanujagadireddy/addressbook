@@ -7,7 +7,7 @@ pipeline {
     }  
     environment{
         BUILD_SERVER_IP='ec2-user@18.60.57.236'
-        TEST_SERVER_IP='ec2-user@18.60.87.22'
+       // TEST_SERVER_IP='ec2-user@18.60.87.22'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
