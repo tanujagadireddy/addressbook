@@ -66,7 +66,7 @@ pipeline {
                 script{
                     echo "Apply the TF code"
                     dir('terraform'){
-                        sh "terraform init"
+                        sh "terraform init -reconfigure"
                         sh "terraform apply --auto-approve"
                       EC2_PUBLIC_IP=sh(
                         script: "terraform output ec2-public-ip",
