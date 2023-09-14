@@ -56,6 +56,22 @@ pipeline {
             }           
         }
         }
+        stage('Provision TF server'){
+            agent any
+            steps{
+                script{
+                    echo "Apply the TF code"
+                    dir('terraform'){
+                        sh "terraform init"
+                        sh "terraform apply --auto-approve"
+                      EC2_PUBLIC_IP=sh(
+                        script: "terraform output ec2-public-ip",
+                        returnStdout: true
+                    ).trim()
+                   }
+                }
+            }
+        }
         stage('Deploy'){
             agent any
             input{
@@ -70,10 +86,10 @@ pipeline {
                 sshagent(['build-server-key']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 echo "Deploying to Test"
-                sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER_IP} sudo yum install docker -y"
-                sh "ssh  ${TEST_SERVER_IP} sudo systemctl start docker"
-                sh "ssh  ${TEST_SERVER_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                sh "ssh  ${TEST_SERVER_IP} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
+                sh "ssh  -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} sudo yum install docker -y"
+                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo systemctl start docker"
+                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
         
