@@ -9,7 +9,7 @@ terraform {
     bucket="tf-backend-sample"
     key="terraform.tfstate"
     region="ap-south-1"
-    dynamodb_table = "tf-sample"
+    dynamodb_table = "tf-infra"
   }
 }
 
