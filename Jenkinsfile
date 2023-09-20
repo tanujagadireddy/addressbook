@@ -46,6 +46,7 @@ pipeline{
             }
         }
         stage('package'){
+            agent any
             steps{
                 script{
                      sshagent(['DEV_SERVER_PACKING']) {
@@ -58,6 +59,7 @@ pipeline{
             }
         }
          stage('Deploy'){
+            agent any
             input{
                 message "Select the version to package"
                 ok "Version selected"
