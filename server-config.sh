@@ -7,7 +7,8 @@ then
   cd /home/ec2-user/addressbook
   git pull origin jenkins-1
 else
-  git clone https://github.com/preethid/addressbook.git 
+  git clone https://github.com/preethid/addressbook.git
+  cd /home/ec2-user/addressbook
+  git checkout jenkins-1
 fi
-cd /home/ec2-user/addressbook
 mvn package

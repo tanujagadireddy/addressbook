@@ -49,7 +49,7 @@ pipeline{
             agent any
             steps{
                 script{
-                     sshagent(['DEV_SERVER_PACKING']) {
+                    sshagent(['DEV_SERVER_PACKING']) {
                     echo "Package the Code"
                     //echo "Packing the code version ${params.APPVERSION}"
                     sh "scp -o StrictHostKeyChecking=no server-config.sh ${DEV_SERVER}:/home/ec2-user"
