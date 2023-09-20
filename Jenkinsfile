@@ -1,5 +1,10 @@
 pipeline{
     agent any
+
+    tools{
+        jdk 'myjava'
+        maven 'mymaven'
+    }
     parameters{
         string(name:'Env',defaultValue:'Test',description:'env to deploy')
         booleanParam(name:'executeTests',defaultValue: true,description:'decide to run tc')
