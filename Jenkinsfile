@@ -6,7 +6,6 @@ pipeline{
         choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     }
 
-
     stages{
         stage('compile'){
             steps{
@@ -29,6 +28,21 @@ pipeline{
             }
         }
         stage('package'){
+            steps{
+                script{
+                    echo "Package the Code"
+                    echo "Packing the code version ${params.APPVERSION}"
+                }
+            }
+        }
+         stage('Deploy'){
+            input{
+                message "Select the version to package"
+                ok "Version selected"
+                parameters{
+                    choice(name:'NEWVERSION',choices:['3','4','5'])
+                }
+            }
             steps{
                 script{
                     echo "Package the Code"
