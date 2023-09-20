@@ -5,10 +5,13 @@ pipeline{
         jdk 'myjava'
         maven 'mymaven'
     }
-    parameters{
-        string(name:'Env',defaultValue:'Test',description:'env to deploy')
-        booleanParam(name:'executeTests',defaultValue: true,description:'decide to run tc')
-        choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
+    // parameters{
+    //     string(name:'Env',defaultValue:'Test',description:'env to deploy')
+    //     booleanParam(name:'executeTests',defaultValue: true,description:'decide to run tc')
+    //     choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
+    // }
+    environment{
+        DEV_SERVER='ec2-user@13.126.125.154'
     }
 
     stages{
@@ -17,18 +20,19 @@ pipeline{
             steps{
                 script{
                    echo "Compile the Code"
-                    echo "Deploying to env: ${params.Env}"
+                    //echo "Deploying to env: ${params.Env}"
                     sh "mvn compile"
                 }
             }
         }
         stage('UnitTest'){
+             agent {label 'linux_slave'}
             agent any
-            when{
-                expression{
-                    params.executeTests == true
-                }
-            }
+            // when{
+            //     expression{
+            //         params.executeTests == true
+            //     }
+            // }
             steps{
                 script{
                     echo "Run the UnitTest Cases"
@@ -42,12 +46,14 @@ pipeline{
             }
         }
         stage('package'){
-            agent {label 'linux_slave'}
             steps{
                 script{
+                     sshagent(['DEV_SERVER_PACKING']) {
                     echo "Package the Code"
-                    echo "Packing the code version ${params.APPVERSION}"
-                    sh "mvn package"
+                    //echo "Packing the code version ${params.APPVERSION}"
+                    sh "scp -o StrictHostKeyChecking=no server-config.sh ${DEV_SERVER}:/home/ec2-user"
+                    sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh'"
+                     }
                 }
             }
         }
@@ -62,7 +68,7 @@ pipeline{
             steps{
                 script{
                     echo "Package the Code"
-                    echo "Packing the code version ${params.APPVERSION}"
+                    //echo "Packing the code version ${params.APPVERSION}"
                 }
             }
         }
