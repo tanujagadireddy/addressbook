@@ -11,7 +11,7 @@ pipeline{
     //     choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     // }
     environment{
-        DEV_SERVER='ec2-user@13.126.125.154'
+        DEV_SERVER='ec2-user@13.126.217.8'
     }
 
     stages{
