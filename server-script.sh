@@ -9,8 +9,9 @@ then
   git pull origin newcicd-ansible
 else
   git clone https://github.com/preethid/addressbook.git
-  git checkout newcicd-ansible
   cd /home/ec2-user/addressbook
+  git checkout newcicd-ansible
+  
 fi
 mvn package
 sudo yum install docker -y
