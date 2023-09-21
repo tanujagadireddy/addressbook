@@ -11,7 +11,7 @@ pipeline{
     //     choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     // }
     environment{
-        DEV_SERVER='ec2-user@13.126.217.8'
+        DEV_SERVER='ec2-user@172.31.9.27'
     }
 
     stages{
@@ -64,7 +64,7 @@ pipeline{
                 message "Select the version to package"
                 ok "Version selected"
                 parameters{
-                    choice(name:'NEWVERSION',choices:['3','4','5'])
+                    choice(name:'NEWVERSION',choices:['DEV','ONPREM','EKS'])
                 }
             }
             steps{
