@@ -7,8 +7,8 @@ pipeline {
      environment{
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
         //image is built and pushed to docker hub from dev server
-        DEV_SERVER_IP='ec2-user@43.205.213.73'
-        ACM_IP='ec2-user@13.126.31.189'
+        DEV_SERVER_IP='ec2-user@13.126.129.166'
+        ACM_IP='ec2-user@65.2.129.152'
         AWS_ACCESS_KEY_ID =credentials("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY=credentials("AWS_SECRET_ACCESS_KEY")
         //created a new credential of type secret text to store docker pwd
