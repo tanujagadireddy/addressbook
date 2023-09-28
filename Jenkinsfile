@@ -11,7 +11,7 @@ pipeline{
     //     choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     // }
     environment{
-        DEV_SERVER='ec2-user@172.31.9.27'
+        DEV_SERVER='ec2-user@172.31.7.48'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
