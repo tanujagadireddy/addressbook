@@ -12,6 +12,7 @@ pipeline{
     // }
     environment{
         DEV_SERVER='ec2-user@172.31.9.27'
+        IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
     stages{
@@ -50,13 +51,18 @@ pipeline{
             steps{
                 script{
                     sshagent(['DEV_SERVER_PACKING']) {
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                     echo "Package the Code"
                     //echo "Packing the code version ${params.APPVERSION}"
                     sh "scp -o StrictHostKeyChecking=no server-config.sh ${DEV_SERVER}:/home/ec2-user"
-                    sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh'"
+                    sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'"
+                    sh "ssh ${DEV_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                    sh "ssh ${DEV_SERVER} sudo docker push  ${IMAGE_NAME}:${BUILD_NUMBER}"
+                    sh "ssh ${DEV_SERVER} sudo docker run -itd -P  ${IMAGE_NAME}:${BUILD_NUMBER}"
                      }
                 }
             }
+        }
         }
          stage('Deploy'){
             agent any
@@ -71,6 +77,7 @@ pipeline{
                 script{
                     echo "Package the Code"
                     //echo "Packing the code version ${params.APPVERSION}"
+
                 }
             }
         }
