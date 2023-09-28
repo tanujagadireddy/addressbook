@@ -46,7 +46,7 @@ pipeline{
                 }
             }
         }
-        stage('package'){
+        stage('BUILDING THE DOCKERIMAGE'){
             agent any
             steps{
                 script{
