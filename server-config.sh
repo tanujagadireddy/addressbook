@@ -2,7 +2,7 @@
 sudo yum install git -y
 #sudo yum install maven -y
 sudo yum install docker -y
-sudo systemcl start docker
+sudo systemctl start docker
 
 if [ -d "addressbook" ]
 then
