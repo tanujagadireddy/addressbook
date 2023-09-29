@@ -12,6 +12,7 @@ pipeline{
     // }
     environment{
         DEV_SERVER='ec2-user@172.31.7.48'
+        TEST_SERVER='ec2-user@172.31.39.69'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
@@ -58,13 +59,13 @@ pipeline{
                     sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'"
                     sh "ssh ${DEV_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
                     sh "ssh ${DEV_SERVER} sudo docker push  ${IMAGE_NAME}:${BUILD_NUMBER}"
-                    sh "ssh ${DEV_SERVER} sudo docker run -itd -P  ${IMAGE_NAME}:${BUILD_NUMBER}"
+                   // sh "ssh ${DEV_SERVER} sudo docker run -itd -P  ${IMAGE_NAME}:${BUILD_NUMBER}"
                      }
                 }
             }
         }
         }
-         stage('Deploy'){
+         stage('DeploytoQA'){
             agent any
             input{
                 message "Select the version to package"
@@ -77,6 +78,15 @@ pipeline{
                 script{
                     echo "Package the Code"
                     //echo "Packing the code version ${params.APPVERSION}"
+                sshagent(['DEV_SERVER_PACKING']) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                echo "Deploying to Test"
+                sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER} sudo yum install docker -y"
+                sh "ssh  ${TEST_SERVER} sudo systemctl start docker"
+                sh "ssh  ${TEST_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                sh "ssh  ${TEST_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
+            }
+        }
 
                 }
             }
