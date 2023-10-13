@@ -65,31 +65,41 @@ pipeline{
             }
         }
         }
-         stage('DeploytoQA'){
-            agent any
-            input{
-                message "Select the version to package"
-                ok "Version selected"
-                parameters{
-                    choice(name:'NEWVERSION',choices:['DEV','ONPREM','EKS'])
-                }
-            }
-            steps{
-                script{
-                    echo "Package the Code"
-                    //echo "Packing the code version ${params.APPVERSION}"
-                sshagent(['DEV_SERVER_PACKING']) {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                echo "Deploying to Test"
-                sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER} sudo yum install docker -y"
-                sh "ssh  ${TEST_SERVER} sudo systemctl start docker"
-                sh "ssh  ${TEST_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                sh "ssh  ${TEST_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
-            }
-        }
+        //  stage('DeploytoQA'){
+        //     agent any
+        //     input{
+        //         message "Select the version to package"
+        //         ok "Version selected"
+        //         parameters{
+        //             choice(name:'NEWVERSION',choices:['DEV','ONPREM','EKS'])
+        //         }
+        //     }
+        //     steps{
+        //         script{
+        //             echo "Package the Code"
+        //             //echo "Packing the code version ${params.APPVERSION}"
+        //         sshagent(['DEV_SERVER_PACKING']) {
+        //         withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+        //         echo "Deploying to Test"
+        //         sh "ssh  -o StrictHostKeyChecking=no ${TEST_SERVER} sudo yum install docker -y"
+        //         sh "ssh  ${TEST_SERVER} sudo systemctl start docker"
+        //         sh "ssh  ${TEST_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+        //         sh "ssh  ${TEST_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
+        //     }
+        // }
 
-                }
-            }
+        //         }
+        //     }
+        // }
+
+        stage("Deploy to k8s"){
+                   agent any
+                   steps{
+                    script{
+                        echo "DEPLOY THE K8S file"
+                        sh 'envsubst < java-mvn-app.yaml | sudo /usr/local/bin/kubectl apply -f -'
+                    }
+                   }
         }
     }
 }
