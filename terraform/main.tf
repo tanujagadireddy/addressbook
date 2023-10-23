@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "s3" {
-        bucket="aws-tf1-backend"
+        bucket="tf-new-1"
         key="terraform.tfstate"
         region="ap-south-1"
-        dynamodb_table="tf-table"
+        dynamodb_table="tf-table-1"
     }
 }
 provider "aws" {
