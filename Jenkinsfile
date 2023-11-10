@@ -14,8 +14,8 @@ pipeline {
     }
 
     environment{
-        DEV_SERVER='ec2-user@172.31.8.237'
-        DEPLOY_SERVER='ec2-user@172.31.14.64'
+        DEV_SERVER='ec2-user@172.31.9.114'
+        //DEPLOY_SERVER='ec2-user@172.31.14.64'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
     }
 
@@ -69,7 +69,7 @@ pipeline {
             }
         }
          }
-        stage('Deploy') {
+        stage('Deploy to EKS') {
             agent any
             input{
                 message "Select the version to deploy"
@@ -80,15 +80,13 @@ pipeline {
             }
             steps {
                 script{
-                     sshagent(['aws-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpassword', usernameVariable: 'dockeruser')]) {
-                     echo 'Deploy the app'
-                     sh "ssh -o StrictHostKeyChecking=no ${DEPLOY_SERVER} sudo yum install docker -y"
-                     sh "ssh  ${DEPLOY_SERVER} sudo systemctl start docker"
-                     sh "ssh ${DEPLOY_SERVER} sudo docker login -u ${dockeruser} -p ${dockerpassword}"
-                    sh "ssh  ${DEPLOY_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
-                }
-                     }
+                     //sshagent(['aws-key']) {
+                   // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpassword', usernameVariable: 'dockeruser')]) {
+                     echo 'Deploy the app on EKS'
+                     sh 'envsubst < java-mvn-app.yaml | sudo /root/bin/kubectl apply -f -'
+                    
+                //}
+                    // }
             }
         }
 
