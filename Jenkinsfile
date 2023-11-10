@@ -83,7 +83,7 @@ pipeline {
                      //sshagent(['aws-key']) {
                    // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpassword', usernameVariable: 'dockeruser')]) {
                      echo 'Deploy the app on EKS'
-                     sh 'envsubst < java-mvn-app.yaml | sudo /root/bin/kubectl apply -f -'
+                     sh 'envsubst < java-mvn-app.yml | sudo /root/bin/kubectl apply -f -'
                     
                 //}
                     // }
