@@ -1,25 +1,9 @@
-data "aws_ami" "my-ami" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-kernel-*-x86_64-gp2"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["amazon"] # Canonical
-}
-
 resource "aws_security_group" "mywebsecurity" {
   name        = "ownsecurityrules"
   description = "Allow TLS inbound traffic"
   vpc_id      = var.vpc_id
- 
-   ingress {
+
+ingress {
     description      = "SSH"
     from_port        = 22
     to_port          = 22
@@ -34,6 +18,7 @@ resource "aws_security_group" "mywebsecurity" {
     cidr_blocks      = ["0.0.0.0/0"]
      }
 
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -42,20 +27,40 @@ resource "aws_security_group" "mywebsecurity" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+
   tags = {
     Name = "${var.env}-sg"
   }
 }
+data "aws_ami" "myami"{
+  most_recent = true
 
-resource "aws_instance" "terraform-instance"{
-    ami = data.aws_ami.my-ami.id
-    instance_type = var.instance_type
-    associate_public_ip_address =true
-   subnet_id=var.subnet_id
-    vpc_security_group_ids = [aws_security_group.mywebsecurity.id]
-     key_name="aws-key"
-     user_data=file("server-script.sh")
-      tags = {
-            Name="${var.env}-mywebserver"
-      }
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-kernel-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["amazon"] # Canonical
+
 }
+resource "aws_instance" "myserver" {
+    
+  #ami           = "ami-0a6ed6689998f32a5"
+  ami=data.aws_ami.myami.id
+  instance_type = var.instance_type
+   associate_public_ip_address =true
+   subnet_id=var.subnet_id
+   vpc_security_group_ids = [aws_security_group.mywebsecurity.id]
+   key_name="aws-key"
+   user_data=file("server-script.sh")
+
+  tags = {
+    Name = "${var.env}-tf"
+  }
+}
+

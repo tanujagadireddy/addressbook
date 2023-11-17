@@ -1,3 +1,3 @@
-output "subnet"{
-    value = aws_subnet.ownsubnet
+output "subnet" {
+  value = aws_subnet.ownsubnet
 }

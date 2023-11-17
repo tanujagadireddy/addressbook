@@ -1,8 +1,7 @@
 resource "aws_subnet" "ownsubnet" {
   vpc_id     = var.vpc_id
   #cidr_block = "10.0.1.0/24"
-  cidr_block=var.subnet_cidr_block
-    availability_zone=var.az
+   cidr_block = var.subnet_cidr_block
 
   tags = {
     Name = "${var.env}-subnet"
@@ -20,6 +19,7 @@ resource "aws_internet_gateway" "ownigw" {
 resource "aws_route_table" "ownrt" {
   vpc_id = var.vpc_id
 
+
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.ownigw.id
@@ -27,7 +27,6 @@ resource "aws_route_table" "ownrt" {
   tags={
     Name: "${var.env}-rt"
   }
-
 }
 
 resource "aws_route_table_association" "a" {
