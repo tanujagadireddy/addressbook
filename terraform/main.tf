@@ -34,6 +34,7 @@ module "myserver-subnet"{
   vpc_id=aws_vpc.ownvpc.id
   subnet_cidr_block = var.subnet_cidr_block
   env=var.env
+  az=var.az
 }
 
 module "myserver-ec2"{
