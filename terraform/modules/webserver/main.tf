@@ -17,6 +17,13 @@ ingress {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
      }
+  ingress {
+    description      = "HTTP"
+    from_port        = 8081
+    to_port          = 8081
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+     }
 
 
   egress {
@@ -57,7 +64,7 @@ resource "aws_instance" "myserver" {
    subnet_id=var.subnet_id
    vpc_security_group_ids = [aws_security_group.mywebsecurity.id]
    key_name="aws-key"
-   //user_data=file("server-script.sh")
+   user_data=file("server-script.sh")
 
   tags = {
     Name = "${var.env}-tf"
