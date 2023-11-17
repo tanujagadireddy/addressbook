@@ -77,7 +77,7 @@ pipeline{
                         sh "terraform init"
                         sh "terraform apply --auto-approve"
                         EC2_PUBLIC_IP=sh(
-                            script: "terraform output ec2",
+                            script: "terraform output public-ip",
                             returnStdout: true
                         ).trim()
 
@@ -99,6 +99,8 @@ pipeline{
                 script{
                     echo "Package the Code"
                     //echo "Packing the code version ${params.APPVERSION}"
+                 echo "Waiting for ec2 instance to initialise"
+                 //sleep(time: 90, unit: "SECONDS")
                 sshagent(['DEV_SERVER_PACKING']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 echo "Deploying to Test"
