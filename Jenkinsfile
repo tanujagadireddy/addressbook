@@ -11,9 +11,15 @@ pipeline{
     //     choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     // }
     environment{
-        DEV_SERVER='ec2-user@172.31.15.80'
+        DEV_SERVER='ec2-user@172.31.36.209'
         //TEST_SERVER='ec2-user@172.31.39.69'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
+        DOCKER_IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
+        ACM_IP='ec2-user@172.31.13.232'
+         AWS_ACCESS_KEY_ID =credentials("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY=credentials("AWS_SECRET_ACCESS_KEY")
+        //created a new credential of type secret text to store docker pwd
+        DOCKER_REG_PASSWORD=credentials("DOCKER_REG_PASSWORD")
     }
 
     stages{
@@ -102,17 +108,18 @@ pipeline{
                  echo "Waiting for ec2 instance to initialise"
                  //sleep(time: 90, unit: "SECONDS")
                 sshagent(['DEV_SERVER_PACKING']) {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                echo "Deploying to Test"
-                sh "ssh  -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} sudo yum install docker -y"
-                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo systemctl start docker"
-                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                sh "ssh  ec2-user@${EC2_PUBLIC_IP} sudo docker run -itd -p 8081:8080 ${IMAGE_NAME}:${BUILD_NUMBER}"
+                sh "scp -o StrictHostKeyChecking=no ansible/* ${ACM_IP}:/home/ec2-user"
+                withCredentials([sshUserPrivateKey(credentialsId: 'Ansible_target',keyFileVariable: 'keyfile',usernameVariable: 'user')]){ 
+                    
+               sh "scp -o StrictHostKeyChecking=no $keyfile ${ACM_IP}:/home/ec2-user/.ssh/id_rsa"
+               
             }
+           sh "ssh -o StrictHostKeyChecking=no ${ACM_IP} bash /home/ec2-user/prepare-ACM.sh ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} ${DOCKER_REG_PASSWORD} ${IMAGE_NAME}" 
         }
 
-                }
+                
             }
         }
+         }
     }
 }
