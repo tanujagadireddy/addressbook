@@ -6,9 +6,9 @@ pipeline {
         maven "mymaven"
     }
     environment{
-        BUILD_SERVER='ec2-user@172.31.32.74'
+        BUILD_SERVER='ec2-user@172.31.1.233'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
-        DEPLOY_SERVER='ec2-user@172.31.36.167'
+        DEPLOY_SERVER='ec2-user@172.31.12.220'
     }
     stages {
         stage('Compile') {
@@ -57,7 +57,7 @@ pipeline {
             }            
         }
 
-        stage('Deploy the docker container'){
+        stage('Deploy the docker container to test env'){
             agent any
             steps{
                 script{
@@ -66,7 +66,7 @@ pipeline {
                      sh "ssh -o StrictHostKeyChecking=no ${DEPLOY_SERVER} sudo yum install docker -y"
                      sh "ssh ${DEPLOY_SERVER} sudo systemctl start docker"
                      sh "ssh ${DEPLOY_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
-                      sh "ssh ${DEPLOY_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
+                     sh "ssh ${DEPLOY_SERVER} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
 
                 }
             }
@@ -74,5 +74,14 @@ pipeline {
 
     }
 }
+      stage('RUN K8S MANIFEST'){
+        agent any
+           steps{
+            script{
+                echo "Run the k8s manifest file"
+                sh 'envsubst < k8s-manifests/java-mvn-app.yml | sudo kubectl apply -f -'
+            }
+           }
+      }
     }
 }
