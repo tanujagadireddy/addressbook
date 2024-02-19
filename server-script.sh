@@ -13,6 +13,7 @@ then
    git pull origin feb-docker
 else
    git clone https://github.com/preethid/addressbook.git
+   cd addressbook
    git checkout feb-docker
 fi
 cd addressbook
