@@ -9,6 +9,8 @@ pipeline {
         BUILD_SERVER='ec2-user@172.31.9.109'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
         DEPLOY_SERVER='ec2-user@172.31.14.15'
+        ACCESS_KEY=credentials('ACCESS_KEY')
+        SECRET_ACCESS_KEY=credentials('SECRET_ACCESS_KEY')
     }
     stages {
         stage('Compile') {
@@ -79,11 +81,11 @@ pipeline {
            steps{
             script{
                 echo "Run the k8s manifest file"
-                // aws --version
-                // aws configure set aws_access_key_id 
-                // aws configure set aws_secret_access_key 
-                // aws eks update-kubeconfig --region ap-south-1 --name eksdemo1
-                // /usr/local/bin/kubectl get nodes
+                aws --version
+                aws configure set aws_access_key_id ${ACCESS_KEY}
+                aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}
+                aws eks update-kubeconfig --region ap-south-1 --name demo2
+                /usr/local/bin/kubectl get nodes
                 sh 'envsubst < k8s-manifests/java-mvn-app.yml | sudo kubectl apply -f -'
             }
            }
