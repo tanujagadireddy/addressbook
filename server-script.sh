@@ -15,6 +15,6 @@ else
    git clone https://github.com/preethid/addressbook.git
    git checkout feb-docker
 fi
-
+cd addressbook
 #mvn package
 sudo docker build -t $1:$2 /home/ec2-user/addressbook
