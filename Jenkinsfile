@@ -80,8 +80,8 @@ pipeline {
             script{
                 echo "Run the k8s manifest file"
                 // aws --version
-                // aws configure set aws_access_key_id AKIAQJAYJMVLUNEYMCE2
-                // aws configure set aws_secret_access_key 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
+                // aws configure set aws_access_key_id 
+                // aws configure set aws_secret_access_key 
                 // aws eks update-kubeconfig --region ap-south-1 --name eksdemo1
                 // /usr/local/bin/kubectl get nodes
                 sh 'envsubst < k8s-manifests/java-mvn-app.yml | sudo kubectl apply -f -'
