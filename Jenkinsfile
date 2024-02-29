@@ -87,6 +87,7 @@ pipeline {
                  withCredentials([sshUserPrivateKey(credentialsId: 'ANSIBLE_TARGET_KEY',keyFileVariable: 'keyfile',usernameVariable: 'user')]){ 
                // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                       sh "scp -o StrictHostKeyChecking=no $keyfile ${ACM_IP}:/home/ec2-user/.ssh/id_rsa"  
+                 }
                       sh "ssh -o StrictHostKeyChecking=no ${ACM_IP}  bash /home/ec2-user/prepare-playbook.sh ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} ${DOCKER_REG_PASSWORD} ${IMAGE_NAME}"
                      
                 }
@@ -95,4 +96,3 @@ pipeline {
                 }
                 }
                    }
-}
