@@ -13,8 +13,9 @@ then
    git pull origin TF-CICD
 else
    git clone https://github.com/preethid/addressbook.git
+   cd addressbook
    git checkout TF-CICD
 fi
-cd addressbook
+
 #mvn package
 sudo docker build -t $1 /home/ec2-user/addressbook
