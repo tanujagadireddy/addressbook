@@ -5,8 +5,14 @@ pipeline {
          maven 'mymaven'
    }
    environment{
-       BUILD_SERVER_IP='ec2-user@172.31.9.109'
+       BUILD_SERVER_IP='ec2-user@172.31.36.155'
        IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
+       ACM_IP='ec2-user@172.31.46.140'
+       AWS_ACCESS_KEY_ID =credentials("ACCESS_KEY")
+        AWS_SECRET_ACCESS_KEY=credentials("SECRET_ACCESS_KEY")
+        //created a new credential of type secret text to store docker pwd
+        DOCKER_REG_PASSWORD=credentials("DOCKER_REG_PASSWORD")
+
    }
     stages {
         stage('Compile') {
@@ -61,25 +67,26 @@ pipeline {
                    dir('terraform'){
                        sh "terraform init"
                        sh "terraform apply --auto-approve"
-                    EC2_PUBLIC_IP=sh(
+                    ANSIBLE_TARGET_EC2_PUBLIC_IP=sh(
                         script: "terraform output ec2-ip",
                         returnStdout: true
                     ).trim()
+                    echo "${ANSIBLE_TARGET_EC2_PUBLIC_IP}"
                    }
                                      
                }
            }
        }
-       stage("Deploy on EC2 instance created by TF"){
+       stage("Run the ansible playbook on ACM"){
           agent any
            steps{
                script{
-                   echo "Deployin on the instance"
-                    echo "${EC2_PUBLIC_IP}"
-                     sshagent(['slave2']) {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                      sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP}  docker login -u $USERNAME -p $PASSWORD"
-                      sh "ssh ec2-user@${EC2_PUBLIC_IP}  docker run -itd -p 8080:8080 ${IMAGE_NAME}"
+                   echo "Copy the ansible folder to ACM and run the playbook"
+                    sshagent(['slave2']) {
+                 withCredentials([sshUserPrivateKey(credentialsId: 'ANSIBLE_TARGET_KEY',keyFileVariable: 'keyfile',usernameVariable: 'user')]){ 
+               // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                      sh "scp -o StrictHostKeyChecking=no $keyfile ${ACM_IP}:/home/ec2-user/.ssh/id_rsa"  
+                      sh "ssh -o StrictHostKeyChecking=no ${ACM_IP}  bash /home/ec2-user/prepare-playbook.sh ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} ${DOCKER_REG_PASSWORD} ${IMAGE_NAME}"
                      
                 }
             }
