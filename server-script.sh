@@ -13,7 +13,6 @@ then
    git pull origin master
 else
    git clone https://github.com/preethid/addressbook.git
-   cd addressbook
    git checkout master
 fi
 cd addressbook
