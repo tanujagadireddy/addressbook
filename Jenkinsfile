@@ -11,9 +11,9 @@ pipeline {
         choice(name:'VERSION',choices:['1.1','1.2','1.3'])
     }
     environment{
-        BUILD_SERVER='ec2-user@172.31.5.87'
+        BUILD_SERVER='ec2-user@172.31.7.124'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
-        DEPLOY_SERVER='ec2-user@172.31.2.135'
+        DEPLOY_SERVER='ec2-user@172.31.12.143'
         ACCESS_KEY=credentials('ACCESS_KEY')
         SECRET_ACCESS_KEY=credentials('SECRET_ACCESS_KEY')
     }
@@ -104,12 +104,12 @@ pipeline {
                 // sh 'aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}'
                 // sh 'aws eks update-kubeconfig --region ap-south-1 --name demo-cluster2'
                 // sh 'kubectl get nodes'
-                sh 'envsubst < k8s-manifests/java-mvn-app.yml |  kubectl apply -f -'
+                sh 'envsubst < java-mvn-app-var.yml > k8s-manifests/java-mvn-app.yml'
                 sh 'git config --global user.name "preethi"'
                 sh 'git config --global user.email "preethi@gmail.com"'
                 sh 'git add k8s-manifests/java-mvn-app.yml'
                 sh 'git commit -m "k8s manifest updated"'
-                sh 'git psuh origin feature/argocd'
+                sh 'git push origin feature/argocd'
 
             }
            }

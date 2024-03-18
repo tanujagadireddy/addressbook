@@ -10,11 +10,11 @@ if [ -d "addressbook" ]
 then
    echo "repo is already cloned and exists"
    cd /home/ec2-user/addressbook
-   git pull origin feature/docker
+   git pull origin feature/argocd
 else
    git clone https://github.com/preethid/addressbook.git
    cd addressbook
-   git checkout feature/docker
+   git checkout feature/argocd
 fi
 
 # export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.402.b06-1.amzn2.0.1.x86_64
