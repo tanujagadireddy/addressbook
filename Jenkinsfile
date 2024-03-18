@@ -99,12 +99,18 @@ pipeline {
            steps{
             script{
                 echo "Run the k8s manifest file"
-                sh 'aws --version'
-                sh 'aws configure set aws_access_key_id ${ACCESS_KEY}'
-                sh 'aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}'
-                sh 'aws eks update-kubeconfig --region ap-south-1 --name demo-cluster2'
-                sh 'kubectl get nodes'
+                // sh 'aws --version'
+                // sh 'aws configure set aws_access_key_id ${ACCESS_KEY}'
+                // sh 'aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}'
+                // sh 'aws eks update-kubeconfig --region ap-south-1 --name demo-cluster2'
+                // sh 'kubectl get nodes'
                 sh 'envsubst < k8s-manifests/java-mvn-app.yml |  kubectl apply -f -'
+                sh 'git config --global user.name "preethi"'
+                sh 'git config --global user.email "preethi@gmail.com"'
+                sh 'git add k8s-manifests/java-mvn-app.yml'
+                sh 'git commit -m "k8s manifest updated"'
+                sh 'git psuh origin feature/argocd'
+
             }
            }
       }
