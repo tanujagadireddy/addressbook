@@ -94,7 +94,7 @@ pipeline {
             }
         }
     }
-     stage('RUN K8S MANIFEST'){
+     stage('Update the k8s manifest with argocd'){
         agent any
            steps{
             script{
