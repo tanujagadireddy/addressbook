@@ -18,6 +18,7 @@ pipeline {
         stage('Compile') {
             steps {
                echo "compiling teh code ${params.APPVERSION}"
+               sh 'mvn compile'
             }
         }
         stage('UnitTest') {
@@ -27,12 +28,18 @@ pipeline {
                 }
             }
             steps {
+                script{
                echo "Test the code"
+               sh 'mvn test'
+            }
             }
         }
         stage('Package') {
             steps {
+                script{
                echo "Package the code ${params.Env}"
+               sh 'mvn package'
+            }
             }
         }
         stage('DEPLOY') {
