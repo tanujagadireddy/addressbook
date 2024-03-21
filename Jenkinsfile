@@ -32,7 +32,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-               echo "Package the code ${params.ENV}"
+               echo "Package the code ${params.Env}"
             }
         }
     }
