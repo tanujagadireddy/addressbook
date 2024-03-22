@@ -1,0 +1,3 @@
+sudo systemctl start docker
+sudo usermod -aG docker ec2-user
+docker run -itd -p 8080:80 nginx
