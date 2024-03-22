@@ -12,6 +12,10 @@ pipeline {
         choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
     }
 
+    environment{
+        PACKAGE_SERVER='ec2-user@172.31.7.45'
+    }
+
     stages {
         stage('Compile') {
             agent {label 'linux_slave'}
@@ -38,10 +42,14 @@ pipeline {
             agent any
             steps {
                 script{
+                sshagent(['slave2']) {
                echo "Package the code ${params.Env}"
-               sh 'mvn package'
+               sh "scp -o StrictHostKeyChecking=no server-config.sh ${PACKAGE_SERVER}:/home/ec2-user"
+               sh "ssh -o StrictHostKeyChecking=no ${PACKAGE_SERVER} 'bash ~/server-config.sh'"
+               
             }
             }
+        }
         }
         stage('DEPLOY') {
             input{
