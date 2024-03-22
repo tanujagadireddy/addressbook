@@ -86,7 +86,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                      sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} sudo yum install docker -y"
                      sh "ssh ec2-user@${EC2_PUBLIC_IP} sudo systemctl start docker"
-                     sh "ssh ec2-user@${EC2_PUBLIC_IP}sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                     sh "ssh ec2-user@${EC2_PUBLIC_IP} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
                      sh "ssh ec2-user@${EC2_PUBLIC_IP} sudo docker run -itd -P ${IMAGE_NAME}:${BUILD_NUMBER}"
 
                 }
