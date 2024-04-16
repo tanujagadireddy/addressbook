@@ -16,6 +16,6 @@ else
    cd addressbook
    git checkout april-eks
 fi
-cd addressbook
+#cd addressbook
 #mvn package
 sudo docker build -t $1:$2 /home/ec2-user/addressbook
