@@ -106,6 +106,7 @@ pipeline {
                 sh 'aws eks update-kubeconfig --region ap-south-1 --name demo2'
                 sh '/usr/local/bin/kubectl get nodes'
                 sh 'envsubst < k8s-manifests/java-mvn-app.yml |  /usr/local/bin/kubectl apply -f -'
+                sh '/usr/local/bin/kubectl get all'
             }
            }
       }
