@@ -106,6 +106,7 @@ pipeline {
                 // sh 'aws eks update-kubeconfig --region ap-south-1 --name myeks1'
                 // sh '/usr/local/bin/kubectl get nodes'
                 sh 'envsubst < java-mvn-app-var.yml > k8s-manifests/java-mvn-app.yml'
+                sh 'git checkout april-argocd'
                 sh 'git config --global user.name "preethi"'
                 sh 'git config --global user.email "preethi@gmail.com"'
                 sh 'git add k8s-manifests/java-mvn-app.yml'
