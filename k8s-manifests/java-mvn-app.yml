@@ -5,7 +5,7 @@ metadata:
   labels:
      app: java-maven-app
 spec:
-  replicas: 2
+  replicas: 20
   selector:
     matchLabels:
       app: java-maven-app
@@ -14,14 +14,14 @@ spec:
       labels:
         app: java-maven-app
     spec:
-      imagePullSecrets:
-      - name: docker-key
+      # imagePullSecrets:
+      # - name: docker-key
       containers:
       - name: sample-ctr
-        image: $IMAGE_NAME:$BUILD_NUMBER
-        imagePullPolicy: Always
+        image: nginx
+        # imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -33,7 +33,7 @@ spec:
   selector:
     app: java-maven-app
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 80
+      targetPort: 80
       protocol: TCP
   type: LoadBalancer
