@@ -6,7 +6,7 @@ pipeline {
         maven "mymaven"
     }
     environment{
-        BUILD_SERVER='ec2-user@172.31.38.236'
+        BUILD_SERVER='ec2-user@172.31.42.77'
         IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
         //DEPLOY_SERVER='ec2-user@172.31.14.15'
         ACCESS_KEY=credentials('ACCESS_KEY')
@@ -95,18 +95,22 @@ pipeline {
 
 //     }
 // }
-      stage('RUN K8S MANIFEST'){
+      stage('RUN K8S MANIFEST via ARGOCD'){
         agent any
            steps{
             script{
                 echo "Run the k8s manifest file"
-                sh 'aws --version'
-                sh 'aws configure set aws_access_key_id ${ACCESS_KEY}'
-                sh 'aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}'
-                sh 'aws eks update-kubeconfig --region ap-south-1 --name myeks1'
-                sh '/usr/local/bin/kubectl get nodes'
-                sh 'envsubst < k8s-manifests/java-mvn-app.yml |  /usr/local/bin/kubectl apply -f -'
-                sh '/usr/local/bin/kubectl get all'
+                // sh 'aws --version'
+                // sh 'aws configure set aws_access_key_id ${ACCESS_KEY}'
+                // sh 'aws configure set aws_secret_access_key ${SECRET_ACCESS_KEY}'
+                // sh 'aws eks update-kubeconfig --region ap-south-1 --name myeks1'
+                // sh '/usr/local/bin/kubectl get nodes'
+                sh 'envsubst < java-mvn-app-var.yml > k8s-manifests/java-mvn-app.yml'
+                sh 'git config --global user.name "preethi"'
+                sh 'git config --global user.email "preethi@gmail.com"'
+                sh 'git add k8s-manifests/java-mvn-app.yml'
+                sh 'git commit -m "k8s manifest updated"'
+                sh 'git push origin april-argocd'
             }
            }
       }
