@@ -10,11 +10,11 @@ if [ -d "addressbook" ]
 then
    echo "repo is already cloned and exists"
    cd /home/ec2-user/addressbook
-   git pull origin TF-CICD
+   git pull origin april-TF
 else
    git clone https://github.com/preethid/addressbook.git
    cd addressbook
-   git checkout TF-CICD
+   git checkout april-TF
 fi
 
 #mvn package
