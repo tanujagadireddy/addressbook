@@ -5,8 +5,8 @@ pipeline {
         maven 'mymaven'
     }
      environment{
-        IMAGE_NAME='devopstrainer/java-mvn-privaterepos'
-        DEV_SERVER_IP='ec2-user@172.31.12.172'
+        IMAGE_NAME='tanuja98/java-mvn-privaterepos'
+        DEV_SERVER_IP='ec2-user@172.31.45.124'
         APP_NAME='java-mvn-app'
     }
     stages {
@@ -15,7 +15,7 @@ pipeline {
         //     steps {
         //         script{
         //             echo "COMPILING THE CODE"
-        //             git 'https://github.com/preethid/addressbook.git'
+        //             git 'https://github.com/tanuja98/addressbook.git'
         //             sh 'mvn compile'
         //         }
         //                   }
@@ -39,7 +39,7 @@ pipeline {
             agent any
            steps{
             script{
-            sshagent(['slave2']) {
+            sshagent(['deploy-server']) {
         withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                      echo "PACKAGING THE CODE"
                      sh "scp -o StrictHostKeyChecking=no server-script.sh ${DEV_SERVER_IP}:/home/ec2-user"
@@ -80,7 +80,7 @@ pipeline {
                sleep(time: 90, unit: "SECONDS")
                echo "Deploying the app to ec2-instance provisioned bt TF"
                echo "${EC2_PUBLIC_IP}"
-               sshagent(['slave2']) {
+               sshagent(['deploy-server']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                       sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} sudo docker login -u $USERNAME -p $PASSWORD"
                       sh "ssh ec2-user@${EC2_PUBLIC_IP} sudo docker run -itd -p 8080:8080 ${IMAGE_NAME}:${BUILD_NUMBER}"

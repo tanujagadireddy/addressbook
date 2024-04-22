@@ -18,7 +18,7 @@ spec:
       - name: my-registry-key
       containers:
       - name: sample-ctr
-        image: devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER
+        image: tanuja98/java-mvn-privaterepos:$BUILD_NUMBER
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
