@@ -67,6 +67,7 @@ pipeline {
                             script: "terraform output ec2-ip",
                             returnStdout: true
                            ).trim()
+                            sh "terraform destroy --auto-approve"
                        }
                        }
                    }
