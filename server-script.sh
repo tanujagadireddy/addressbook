@@ -12,7 +12,7 @@ then
    cd /home/ec2-user/addressbook
    git pull origin TF-CICD
 else
-   git clone https://github.com/preethid/addressbook.git
+   git clone https://github.com/tanujagadireddy/addressbook.git
    cd addressbook
    git checkout TF-CICD
 fi

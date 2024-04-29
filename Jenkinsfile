@@ -5,11 +5,11 @@ pipeline {
          maven 'mymaven'
    }
    environment{
-       BUILD_SERVER_IP='ec2-user@172.31.36.155'
-       IMAGE_NAME='devopstrainer/java-mvn-privaterepos:$BUILD_NUMBER'
-       ACM_IP='ec2-user@172.31.46.140'
-       AWS_ACCESS_KEY_ID =credentials("ACCESS_KEY")
-        AWS_SECRET_ACCESS_KEY=credentials("SECRET_ACCESS_KEY")
+       BUILD_SERVER_IP='ec2-user@172.31.32.77'
+       IMAGE_NAME='tanuja98/java-mvn-privaterepos:$BUILD_NUMBER'
+       ACM_IP='ec2-user@172.31.46.152'
+       AWS_ACCESS_KEY_ID =credentials("jenkins_aws_access_key_id")
+       AWS_SECRET_ACCESS_KEY=credentials("jenkins_aws_secret_access_key")
         //created a new credential of type secret text to store docker pwd
         DOCKER_REG_PASSWORD=credentials("DOCKER_REG_PASSWORD")
 
@@ -42,7 +42,7 @@ pipeline {
             agent any            
             steps {
                 script{
-                sshagent(['slave2']) {
+                sshagent(['build_server']) {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                 echo "Packaging the apps"
                 sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER_IP}:/home/ec2-user"
@@ -57,8 +57,8 @@ pipeline {
         }
        stage('Provision the server with TF'){
             environment{
-                   AWS_ACCESS_KEY_ID =credentials("ACCESS_KEY")
-                   AWS_SECRET_ACCESS_KEY=credentials("SECRET_ACCESS_KEY")
+                   AWS_ACCESS_KEY_ID =credentials("jenkins_aws_access_key_id")
+                   AWS_SECRET_ACCESS_KEY=credentials("jenkins_aws_secret_access_key")
             }
            agent any
            steps{
@@ -82,7 +82,7 @@ pipeline {
            steps{
                script{
                    echo "Copy the ansible folder to ACM and run the playbook"
-                    sshagent(['slave2']) {
+                    sshagent(['build_server']) {
                          sh "scp -o StrictHostKeyChecking=no ansible/* ${ACM_IP}:/home/ec2-user"
                  withCredentials([sshUserPrivateKey(credentialsId: 'ANSIBLE_TARGET_KEY',keyFileVariable: 'keyfile',usernameVariable: 'user')]){ 
                // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
